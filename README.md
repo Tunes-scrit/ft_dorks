@@ -6,12 +6,8 @@ https://user-images.githubusercontent.com/53110905/191117429-1ff6ba57-5380-41bb-
 
 
 A ter em atenção:
-- A wordlist deve conter somente a extenção dos ficheiros (ex:pdf,php,xml,png,...)				                   
-- O script para funcionar corretamente, o sistema deve ter as seguintes ferramentas instaladas: proxychains, tor, lynx, exiftool
+- A wordlist deve conter somente a extenção dos ficheiros (ex:pdf, php, xml, png,...)				                   
+- O sistema deve ter as seguintes ferramentas instaladas: proxychains, tor, lynx, exiftool
 
 Autor: TuciraTeam
 Ano: 2022
-
-
-
-
