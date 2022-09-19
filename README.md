@@ -8,5 +8,5 @@ https://user-images.githubusercontent.com/53110905/191117429-1ff6ba57-5380-41bb-
 Atenção:
 - A wordlist deve conter somente a extenção dos ficheiros (ex:pdf, php, xml, png,...)				                   
 - O sistema deve ter as seguintes ferramentas instaladas: proxychains, tor, lynx, exiftool
-Autor: TuciraTeam
-Ano: 2022
+
+Autor: TuciraTeam Ano: 2022
