@@ -6,6 +6,8 @@ https://user-images.githubusercontent.com/53110905/191117429-1ff6ba57-5380-41bb-
 
 
 Atenção:
+
+- Testado no Kalinux 5.19.0-kali2-amd64
 - A wordlist deve conter somente a extenção dos ficheiros (ex:pdf, php, xml, png,...)				                   
 - O sistema deve ter as seguintes ferramentas instaladas: proxychains, tor, lynx, exiftool
 
