@@ -257,7 +257,7 @@ res3=$(cat $b03/$a1-link)
 				perc=$((($t2 + 1) * 100 / $wl2))
 				percBar=$((perc * max_bar_size / 100))
 				wget -q $url2 -P $b0$a1$dir
-				echo -ne "\r$c1[*] Executar Analise$c2 $z$c1 de$c2 $wl2 $c1[$c2$c4${bar_size:0:percBar}$c2$c1]$c2 $perc %"
+				echo -ne "\r$c1[*] Executar Analise$c2 $t1$c1 de$c2 $wl2 $c1[$c2$c4${bar_size:0:percBar}$c2$c1]$c2 $perc %"
 				((t2=t2+1))
 				((t1=t1+1))
 			done
@@ -270,7 +270,7 @@ res3=$(cat $b03/$a1-link)
 				perc=$((($t2 + 1) * 100 / $wl3))
 				percBar=$((perc * max_bar_size / 100))
 				wget -q $url -P $b0/$a1/
-				echo -ne "\r$c1[*] Executar Analise$c2 $z$c1 de$c2 $wl3 $c1[$c2$c4${bar_size:0:percBar}$c2$c1]$c2 $perc %"
+				echo -ne "\r$c1[*] Executar Analise$c2 $t1$c1 de$c2 $wl3 $c1[$c2$c4${bar_size:0:percBar}$c2$c1]$c2 $perc %"
 				((t2=t2+1))
 				((t1=t1+1))
 			done
