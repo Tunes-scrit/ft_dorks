@@ -1,0 +1,281 @@
+#!/usr/bin/bash
+# Autor: Tucirateam
+# Contato: tunesteste@gmail.com
+v="2.0"
+# Ano: 2022
+
+# Este script (1) identifica, (2) faz o download e (3) analisa (metadados) o tipo de ficheiros existentes (pdf,php,xml...) em um dominio na internet (google,duckduckgo,bing) de forma automática.
+
+## Modo de funcionamento: ./ficheiro.sh
+
+######################################### !!!!!!! ATENÇÃO !!!!!!! ##################################################################
+#														                   #
+# - A wordlist deve conter somente a extenção dos ficheiros (ex:pdf,php,xml,png,...)				                   #
+# - O script para funcionar corretamente, o sistema deve ter as seguintes ferramentas instaladas: proxychains, tor, lynx, exiftool #
+#														                   #
+####################################################################################################################################
+
+# Variaveis das cores
+c1="\033[00;34m" # azul
+c2="\033[01;37;00m" # reset
+c3="\033[00;35m" # roxo
+c4="\033[00;32m" # verde
+c5="\033[01;31m" # vermelho
+c6="\033[00;33m" # amarelo
+
+# Logotipo
+printf "\n\n"
+echo -e "$c5        _  _   _                                       _                              _         $c2"      
+echo -e "$c5      _(_)(_) (_)                                     (_)                            (_)        $c2"      
+echo -e "$c5   _ (_) _  _ (_) _  _                        _  _  _ (_)    _  _  _    _       _  _ (_)     _  $c2"      
+echo -e "$c5  (_)(_)(_)(_)(_)(_)(_)                     _(_)(_)(_)(_) _ (_)(_)(_) _(_)_  _ (_)(_)(_)   _(_) $c2"      
+echo -e "$c6     (_)      (_)                          (_)        (_)(_)         (_) (_)(_)      (_) _(_)   $c2"      
+echo -e "$c6     (_)      (_)     _                    (_)        (_)(_)         (_) (_)         (_)(_)_    $c2"      
+echo -e "$c4     (_)      (_)_  _(_)                   (_)_  _  _ (_)(_) _  _  _ (_) (_)         (_)  (_)_  $c2"      
+echo -e "$c4     (_)        (_)(_)                       (_)(_)(_)(_)   (_)(_)(_)    (_)         (_)    (_) $c2"      
+echo -e "$c4                           _  _  _  _  _  _  _                                                  $c2"         
+echo -e "$c4                          (_)(_)(_)(_)(_)(_)(_)                                                 $c2"         
+printf  "\n"
+echo -e "	  @ Tucirateam  							Versão: $v             "
+printf "\n"
+
+
+## Variáveis utilizadas no script
+d=$(date +"%F%H%M") 
+l1="/home/tucira/smart-recon/ferramentas/webrecon/webrecon_base/business/ficheiro_temp_g"
+l2="/home/tucira/smart-recon/ferramentas/webrecon/webrecon_base/business/ficheiro_temp_d"
+l3="/home/tucira/smart-recon/ferramentas/webrecon/webrecon_base/business/ficheiro_temp2_d"
+l4="/home/tucira/smart-recon/ferramentas/webrecon/webrecon_base/business/ficheiro_temp_b"
+l6="/home/tucira/smart-recon/ferramentas/webrecon/webrecon_base/business/ficheiro_temp2_b"
+b03="/home/tucira/smart-recon/ferramentas/webrecon/webrecon_base/business"
+b0="/home/tucira/smart-recon/ferramentas/webrecon/webrecon_base/business/download_documentos/"
+l8="/home/tucira/smart-recon/ferramentas/webrecon/webrecon_base/business/ficheiro_temp3_w"
+i=1
+e=0
+n=1
+h=0
+z=1
+x=0
+bar_size="##########################"
+max_bar_size=${#bar_size}
+count=1
+count2=1
+seq=50 # Procura 5 paginas no browser (50 = 5)
+
+## Inicio da função para o usuário introduzir o Dominio e a Wordlist
+
+# Dominio
+echo -e "\n$c3[?] Digite o Dominio: $c2"
+echo -e "$c6[!] Exemplo: desecsecurity.com$c2"
+read -p '[R] ' a1
+# Verificar se foi digitado o endereço de um Dominio
+	if [ -z "$a1" ] 
+	then
+		echo -e "\n$c5[/!\] Exemplo do Modo de Funcionamento: desecsecurity.com$c2"
+		exit
+	fi
+# Wordlist
+echo -e "\n$c3[?] Digite o local da Wordlist com o(s) tipo(s) de Ficheiro(s) que pretende procurar:$c2"
+echo -e "$c6[!] Exemplo: /home/wordlist/minhalista.txt$c2"
+read -p '[R] ' wlist
+# Verificar se foi digitado o endereço de uma Wordlist
+	if [ -z "$wlist" ] 
+	then
+		echo -e "\n$c5[/!\] Exemplo do Modo de Funcionamento: /home/wordlist/minhalista.txt$c2" && exit
+	fi
+# Verificar se existe a Wordlist no endereço digitado
+	if [ -f "$wlist" ]
+	then
+	
+## Fim da função para o usuário introduzir o Dominio e a Wordlist
+
+
+## Inicio da função para procurar no Google o tipo de ficheiro existente na wordlist
+		function google {
+					#service tor start
+					#sleep 3
+					wl=$(wc -l $wlist| awk '{printf $1}')
+					printf "\n\n$c4[+] Pesquisar no Google:$c2\n"
+						tput civis	
+						for var1 in $(cat $wlist)
+						do 
+							#service tor restart
+							perc=$((($e + 1) * 100 / $wl))
+							percBar=$((perc * max_bar_size / 100))
+							sleep 6
+								for count3 in `seq 0 10 $seq`
+								do
+									#proxychains4 -q lynx --dump -cookies "https://duckduckgo.com/?q=site:$a1+filetype:$var1" >> $l1 2>/dev/null
+									lynx --dump -cookies -nonumbers "http://www.google.com/search?&q=site:$a1 $var1&start=$count3" >> $l1 2>/dev/null
+									error77=$(cat $l1 | grep -io "Our systems have detected unusual traffic from your computer network." | head -n 1)
+									if [ "$error77" == "Our systems have detected unusual traffic from your computer network." ]
+									then
+										printf "$c5[X] Google Bloqueou Ligação...Tente mais tarde (+/- 60m), ou altere o IP!$c2" && rm -f $l1
+										return
+									fi
+								done	
+							echo -ne "\r$c1[*] Executar Dork$c2 $i$c1 de$c2 $wl $c1[$c2$c4${bar_size:0:percBar}$c2$c1]$c2 $perc %"
+							((e=e+1))
+							((i=i+1))
+						done 
+						tput cnorm
+					
+					printf "\n$c6[!] Resultado:$c2\n"
+					cat $l1 | cut -d '=' -f2 | egrep -v "site|google|1&" | sed 's/...$//' | grep "http" | sort -u >> $l8
+					var45=$(cat $l8) 
+					if [ -z "$var45" ]
+					then
+						printf "$c5[x] Não encontrou nada!$c2\n" && rm -f $l1 && rm -f $l8
+					else
+						var68=$(wc -l $l8 | awk '{printf $1}')
+						cat $l8 | awk '{print "\033[01;32;40m""[-] ""\033[01;37;00m"$0}' | sort -u && printf "$c6[!] Encontrou$c2 $var68$c6 URL(s)$c2" && rm -f $l1 
+					fi
+					
+				}
+# Fim da função para procurar no Google o tipo de ficheiro existente na wordlist
+
+
+## Inicio da função para procurar no DuckDuckGo o tipo de ficheiro existente na wordlist
+		function duck {	
+					wl=$(wc -l $wlist| awk '{printf $1}')
+					#service tor start
+					#sleep 3
+					printf "\n\n$c4[+] Pesquisar no Duckduckgo:$c2\n"
+						tput civis
+						for var1 in $(cat $wlist)
+						do 
+							perc=$((($h + 1) * 100 / $wl))
+							percBar=$((perc * max_bar_size / 100))
+							#service tor restart
+							sleep 6
+							lynx --dump -listonly -cookies -nonumbers "https://duckduckgo.com/?q=site:$a1+$var1" >> $l2 2>/dev/null
+							echo -ne "\r$c1[*] Executar Dork$c2 $n$c1 de$c2 $wl $c1[$c2$c4${bar_size:0:percBar}$c2$c1]$c2 $perc %"
+							((h=h+1))
+							((n=n+1))
+						done 
+						tput cnorm
+					printf "\n$c6[!] Resultado:$c2\n"
+					cat $l2 | grep "http" | cut -d '=' -f2 | sed 's/&rut/ /' | egrep -v "www.google.com|duckduckgo.com|duckduckgo" | sort -u >> $l3
+					var89=$(cat $l3)
+					if [ -z "$var89" ]
+					then
+						printf "$c5[X] Não encontrou nada!$c2" && rm -f $l2 && rm -f $l3 
+					else
+						cat $l3 | awk '{print "\033[01;32;40m""[-] ""\033[01;37;00m"$0}' 
+						cat $l3 | sort -u >> $l8
+						var27=$(wc -l $l3 | awk '{printf $1}') && printf "$c6[!] Encontrou$c2 $var27$c6 URL(s)$c2\n" && rm -f $l2 && rm -f $l3 
+						
+					fi
+					
+				}
+# Fim da função para procurar no DuckDuckGo o tipo de ficheiro existente na wordlist
+
+## Inicio da função para procurar no Bing o tipo de ficheiro existente na wordlist
+		function bing {
+					wl=$(wc -l $wlist| awk '{printf $1}')
+					printf "\n\n$c4[+] Pesquisar no Bing:$c2\n"
+						tput civis	
+						for var1 in $(cat $wlist)
+						do 
+							perc=$((($x + 1) * 100 / $wl))
+							percBar=$((perc * max_bar_size / 100))
+							sleep 6
+								for count4 in `seq 0 10 $seq`
+								do
+									lynx --dump -cookies -nonumbers -listonly "https://bing.com/search?q=site:$a1 $var1&sc=8-5&sp=-1&sk=&first=$count4" >> $l4 2>/dev/null
+								done	
+							echo -ne "\r$c1[*] Executar Dork$c2 $z$c1 de$c2 $wl $c1[$c2$c4${bar_size:0:percBar}$c2$c1]$c2 $perc %"
+							((x=x+1))
+							((z=z+1))
+						done 
+						tput cnorm
+					printf "\n$c6[!] Resultado:$c2\n"
+					cat $l4 | cut -d '=' -f2 | egrep -v "site|google|1&|bing.com|microsoft.com" | grep "http" | sort -u >> $l6
+					var45=$(cat $l6) 
+					if [ -z "$var45" ]
+					then
+						printf "\n$c5[x] Não encontrou nada!$c2\n" && rm -f $l4 && rm -f $l6
+					else
+						cat $l6 | awk '{print "\033[01;32;40m""[-] ""\033[01;37;00m"$0}' 
+						cat $l6 | sort -u >> $l8
+						var68=$(wc -l $l6 | awk '{printf $1}') && printf "$c6[!] Encontrou$c2 $var68$c6 URL(s)$c2" && rm -f $l4 && rm -f $l6
+					fi
+					
+				}
+
+# Fim da função para procurar no Bing o tipo de ficheiro existente na wordlist
+
+#Soma do Resultado da procura das 3 plataformas
+			google
+			duck	
+			bing
+				res2=$(cat $l8 2>/dev/null) 
+					if [ -z "$res2" ]
+					then
+						printf "\n$c5[x]Não encontrou nada!$c2\n" && rm -f $l8 && exit
+					else
+						cat $l8 | sort -u >> $b03/$a1-link 
+						res45=$(wc -l $b03/$a1-link | awk '{printf $1}')
+						printf "\n$c6[!] Guardado(s) $c2$res45$c6 Url(s) no Diretório:\n$c2$c4[-]$c2 $b03/$a1-link\n" && rm -f $l8
+					fi
+
+	
+	else
+		printf "$c5[/!\] Wordlist inexistente!$c2" && exit
+	fi
+
+## Inicio da função para analisar o tipo(s) de ficheiro(s) descoberto(s) (Metadados)
+
+# Acção para perguntar se o usuario quer analisar os dados dos ficheiros descobertos
+res3=$(cat $b03/$a1-link) 
+	if [ -z "$res3" ]
+	then
+		printf "\n$c5[!] A ferramenta não encontrou nenhum tipo de ficheiro(s) da wordlist no dominio$c2 $a1" && exit 
+	else
+		tficheiro=$(wc -l $b03/$a1-link | awk '{printf $1}')
+		echo -e "\n$c3[Metadados] Analisar$c2 $tficheiro$c3 Ficheiro(s) Identificado(s) ?$c2"
+		printf "$c4[s] SIM$c2" && printf "\n$c4[n] NÃO$c2\n"
+		read -p '[R] ' a3
+	fi
+  
+# Acção para analisar dados dos ficheiros descobertos
+	if [ "$a3" == "s" ]
+	then
+		tput civis
+		printf "\n$c1------- Identificar Metadados do(s) Ficheiro(s) Identificados em $c2$a1$c1 -------$c2\n"
+		printf "\n$c4[+] Pesquisar Metadados:$c2"
+		if [ -d  "$b0$a1" ]
+		then
+			dir=$d
+			mkdir -p $b0$a1$dir
+			wl2=$(wc -l $b03/$a1-link | awk '{printf $1}')
+			for url2 in $(cat $b03/$a1-link)
+			do
+				perc=$((($x + 1) * 100 / $wl2))
+				percBar=$((perc * max_bar_size / 100))
+				wget -q $url2 -P $b0$a1$dir
+				echo -ne "\r$c1[*] Executar Analise$c2 $z$c1 de$c2 $wl2 $c1[$c2$c4${bar_size:0:percBar}$c2$c1]$c2 $perc %"
+				((x=x+1))
+				((z=z+1))
+			done
+			exiftool $b0$a1$dir/* >> $b03/$a1-meta$dir 2> /dev/null && printf "\n$c6[!] Metadados guardado(s) no Diretório:$c2\n$c4[-]$c2 $b03/$a1-meta$dir"
+		else
+			mkdir $b0$a1/
+			wl2=$(wc -l $b03/$a1-link | awk '{printf $1}')
+			for url in $(cat $b03/$a1-link)
+			do
+				perc=$((($x + 1) * 100 / $wl2))
+				percBar=$((perc * max_bar_size / 100))
+				wget -q $url -P $b0/$a1/
+				echo -ne "\r$c1[*] Executar Analise$c2 $z$c1 de$c2 $wl2 $c1[$c2$c4${bar_size:0:percBar}$c2$c1]$c2 $perc %"
+				((x=x+1))
+				((z=z+1))
+			done
+			exiftool $b0$a1/* >> $b03/$a1-meta 2> /dev/null && printf "\n$c6[!] Metadados guardado(s) no Diretório:$c2\n$c4[-]$c2 $b03/$a1-meta"
+		
+		fi
+		tput cnorm
+  ## Fim da função para analisar o tipo(s) de ficheiro(s) descoberto(s) (Metadados)
+	fi
+printf "$c1\n\nAdeus..Goodbye..Wiedersehen..au revoir..до свидания..再见..addio..وداعا\n\n$c2"
+exit
