@@ -56,6 +56,8 @@ n=1
 h=0
 z=1
 x=0
+t1=1
+t2=0
 bar_size="##########################"
 max_bar_size=${#bar_size}
 count=1
@@ -110,7 +112,8 @@ read -p '[R] ' wlist
 									error77=$(cat $l1 | grep -io "Our systems have detected unusual traffic from your computer network." | head -n 1)
 									if [ "$error77" == "Our systems have detected unusual traffic from your computer network." ]
 									then
-										printf "$c5[X] Google Bloqueou Ligação...Tente mais tarde (+/- 60m), ou altere o IP!$c2" && rm -f $l1
+										printf "$c5[X] Google Bloqueou Ligação...$c2"
+										printf "\n$c6[!] Tente mais tarde (+/- 60m), altere o IP ou execute as dorks de forma manual num browser!$c2\n" && rm -f $l1
 										return
 									fi
 								done	
@@ -120,15 +123,16 @@ read -p '[R] ' wlist
 						done 
 						tput cnorm
 					
-					printf "\n$c6[!] Resultado:$c2\n"
+					#printf "\n$c6[!] Resultado:$c2\n"
 					cat $l1 | cut -d '=' -f2 | egrep -v "site|google|1&" | sed 's/...$//' | grep "http" | sort -u >> $l8
 					var45=$(cat $l8) 
 					if [ -z "$var45" ]
 					then
-						printf "$c5[x] Não encontrou nada!$c2\n" && rm -f $l1 && rm -f $l8
+						printf "\n$c5[x] Não encontrou nada!$c2" && rm -f $l1 && rm -f $l8
 					else
 						var68=$(wc -l $l8 | awk '{printf $1}')
-						cat $l8 | awk '{print "\033[01;32;40m""[-] ""\033[01;37;00m"$0}' | sort -u && printf "$c6[!] Encontrou$c2 $var68$c6 URL(s)$c2" && rm -f $l1 
+						#cat $l8 | awk '{print "\033[01;32;40m""[-] ""\033[01;37;00m"$0}' | sort -u 
+						printf "\n$c6[!] Encontrou$c2 $var68$c6 URL(s)$c2" && rm -f $l1 
 					fi
 					
 				}
@@ -140,7 +144,7 @@ read -p '[R] ' wlist
 					wl=$(wc -l $wlist| awk '{printf $1}')
 					#service tor start
 					#sleep 3
-					printf "\n\n$c4[+] Pesquisar no Duckduckgo:$c2\n"
+					printf "$c4[+] Pesquisar no Duckduckgo:$c2\n"
 						tput civis
 						for var1 in $(cat $wlist)
 						do 
@@ -154,16 +158,16 @@ read -p '[R] ' wlist
 							((n=n+1))
 						done 
 						tput cnorm
-					printf "\n$c6[!] Resultado:$c2\n"
+					#printf "\n$c6[!] Resultado:$c2\n"
 					cat $l2 | grep "http" | cut -d '=' -f2 | sed 's/&rut/ /' | egrep -v "www.google.com|duckduckgo.com|duckduckgo" | sort -u >> $l3
 					var89=$(cat $l3)
 					if [ -z "$var89" ]
 					then
-						printf "$c5[X] Não encontrou nada!$c2" && rm -f $l2 && rm -f $l3 
+						printf "\n$c5[X] Não encontrou nada!$c2" && rm -f $l2 && rm -f $l3 
 					else
-						cat $l3 | awk '{print "\033[01;32;40m""[-] ""\033[01;37;00m"$0}' 
+						#cat $l3 | awk '{print "\033[01;32;40m""[-] ""\033[01;37;00m"$0}' 
 						cat $l3 | sort -u >> $l8
-						var27=$(wc -l $l3 | awk '{printf $1}') && printf "$c6[!] Encontrou$c2 $var27$c6 URL(s)$c2\n" && rm -f $l2 && rm -f $l3 
+						var27=$(wc -l $l3 | awk '{printf $1}') && printf "\n$c6[!] Encontrou$c2 $var27$c6 URL(s)$c2\n" && rm -f $l2 && rm -f $l3 
 						
 					fi
 					
@@ -173,7 +177,7 @@ read -p '[R] ' wlist
 ## Inicio da função para procurar no Bing o tipo de ficheiro existente na wordlist
 		function bing {
 					wl=$(wc -l $wlist| awk '{printf $1}')
-					printf "\n\n$c4[+] Pesquisar no Bing:$c2\n"
+					printf "$c4[+] Pesquisar no Bing:$c2\n"
 						tput civis	
 						for var1 in $(cat $wlist)
 						do 
@@ -189,16 +193,16 @@ read -p '[R] ' wlist
 							((z=z+1))
 						done 
 						tput cnorm
-					printf "\n$c6[!] Resultado:$c2\n"
+					#printf "\n$c6[!] Resultado:$c2\n"
 					cat $l4 | cut -d '=' -f2 | egrep -v "site|google|1&|bing.com|microsoft.com" | grep "http" | sort -u >> $l6
 					var45=$(cat $l6) 
 					if [ -z "$var45" ]
 					then
 						printf "\n$c5[x] Não encontrou nada!$c2\n" && rm -f $l4 && rm -f $l6
 					else
-						cat $l6 | awk '{print "\033[01;32;40m""[-] ""\033[01;37;00m"$0}' 
+						#cat $l6 | awk '{print "\033[01;32;40m""[-] ""\033[01;37;00m"$0}' 
 						cat $l6 | sort -u >> $l8
-						var68=$(wc -l $l6 | awk '{printf $1}') && printf "$c6[!] Encontrou$c2 $var68$c6 URL(s)$c2" && rm -f $l4 && rm -f $l6
+						var68=$(wc -l $l6 | awk '{printf $1}') && printf "\n$c6[!] Encontrou$c2 $var68$c6 URL(s)$c2" && rm -f $l4 && rm -f $l6
 					fi
 					
 				}
@@ -216,7 +220,7 @@ read -p '[R] ' wlist
 					else
 						cat $l8 | sort -u >> $b03/$a1-link 
 						res45=$(wc -l $b03/$a1-link | awk '{printf $1}')
-						printf "\n$c6[!] Guardado(s) $c2$res45$c6 Url(s) no Diretório:\n$c2$c4[-]$c2 $b03/$a1-link\n" && rm -f $l8
+						printf "\n\n$c6[!] Guardado(s) $c2$res45$c6 Url(s) no Diretório:\n$c2$c4[-]$c2 $b03/$a1-link\n" && rm -f $l8
 					fi
 
 	
@@ -237,7 +241,6 @@ res3=$(cat $b03/$a1-link)
 		printf "$c4[s] SIM$c2" && printf "\n$c4[n] NÃO$c2\n"
 		read -p '[R] ' a3
 	fi
-  
 # Acção para analisar dados dos ficheiros descobertos
 	if [ "$a3" == "s" ]
 	then
@@ -251,31 +254,32 @@ res3=$(cat $b03/$a1-link)
 			wl2=$(wc -l $b03/$a1-link | awk '{printf $1}')
 			for url2 in $(cat $b03/$a1-link)
 			do
-				perc=$((($x + 1) * 100 / $wl2))
+				perc=$((($t2 + 1) * 100 / $wl2))
 				percBar=$((perc * max_bar_size / 100))
 				wget -q $url2 -P $b0$a1$dir
 				echo -ne "\r$c1[*] Executar Analise$c2 $z$c1 de$c2 $wl2 $c1[$c2$c4${bar_size:0:percBar}$c2$c1]$c2 $perc %"
-				((x=x+1))
-				((z=z+1))
+				((t2=t2+1))
+				((t1=t1+1))
 			done
 			exiftool $b0$a1$dir/* >> $b03/$a1-meta$dir 2> /dev/null && printf "\n$c6[!] Metadados guardado(s) no Diretório:$c2\n$c4[-]$c2 $b03/$a1-meta$dir"
 		else
 			mkdir $b0$a1/
-			wl2=$(wc -l $b03/$a1-link | awk '{printf $1}')
+			wl3=$(wc -l $b03/$a1-link | awk '{printf $1}')
 			for url in $(cat $b03/$a1-link)
 			do
-				perc=$((($x + 1) * 100 / $wl2))
+				perc=$((($t2 + 1) * 100 / $wl3))
 				percBar=$((perc * max_bar_size / 100))
 				wget -q $url -P $b0/$a1/
-				echo -ne "\r$c1[*] Executar Analise$c2 $z$c1 de$c2 $wl2 $c1[$c2$c4${bar_size:0:percBar}$c2$c1]$c2 $perc %"
-				((x=x+1))
-				((z=z+1))
+				echo -ne "\r$c1[*] Executar Analise$c2 $z$c1 de$c2 $wl3 $c1[$c2$c4${bar_size:0:percBar}$c2$c1]$c2 $perc %"
+				((t2=t2+1))
+				((t1=t1+1))
 			done
 			exiftool $b0$a1/* >> $b03/$a1-meta 2> /dev/null && printf "\n$c6[!] Metadados guardado(s) no Diretório:$c2\n$c4[-]$c2 $b03/$a1-meta"
 		
 		fi
 		tput cnorm
-  ## Fim da função para analisar o tipo(s) de ficheiro(s) descoberto(s) (Metadados)
 	fi
+## Fim da função para analisar o tipo(s) de ficheiro(s) descoberto(s) (Metadados)
+
 printf "$c1\n\nAdeus..Goodbye..Wiedersehen..au revoir..до свидания..再见..addio..وداعا\n\n$c2"
 exit
